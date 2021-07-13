@@ -1,0 +1,32 @@
+syntax = "proto3";
+package phonebookpb;
+
+option go_package = "phonebook/phonebookpb";
+
+message Greeting {
+    string firstName = 1;
+    string lastName = 2;
+}
+
+message GreetRequest {
+    Greeting greeting = 1;
+}
+
+message GreetRespone {
+    string result = 1;
+}
+message GreetManyTimesRequest {
+    Greeting greeting = 1;
+}
+
+message GreetManyTimesRespone {
+    string result = 1;
+}
+
+service GreetService {
+    //Unary
+    rpc Greet(GreetRequest) returns (GreetRespone){};
+    
+    //Server Streaming
+    rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesRespone){};
+};
