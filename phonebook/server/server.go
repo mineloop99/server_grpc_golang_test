@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	pb "go-protobuf/phonebook/phonebookpb"
+	"io"
 	"log"
 	"net"
 	"strconv"
@@ -42,6 +43,48 @@ func (*server) GreetManyTimes(req *pb.GreetManyTimesRequest, stream pb.GreetServ
 		time.Sleep(1000 * time.Millisecond)
 	}
 	return nil
+}
+
+func (*server) LongGreet(stream pb.GreetService_LongGreetServer) error {
+	fmt.Printf("LongGreet function was invoked with a streaming request")
+	result := ""
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&pb.LongGreetRespone{
+				Result: result,
+			})
+		}
+		if err != nil {
+			log.Fatalf("Error while  reading client stream: %v", req)
+		}
+		firstName := req.GetGreeting().GetFirstName()
+		result += "Hello " + firstName + "! "
+	}
+}
+
+func (*server) GreetEveryone(stream pb.GreetService_GreetEveryoneServer) error {
+	fmt.Printf("LongGreet function was invoked with a streaming request")
+
+	for {
+		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			log.Fatalf("Error while reading client strean: %v", err)
+		}
+
+		firstName := req.GetGreeting().GetFirstName()
+		result := "Hello " + firstName + "! "
+		sendErr := stream.Send(&pb.GreetEveryoneRespone{
+			Result: result,
+		})
+		if sendErr != nil {
+			log.Fatalf("Error while sending data to client: %v", err)
+			return err
+		}
+	}
 }
 
 func main() {

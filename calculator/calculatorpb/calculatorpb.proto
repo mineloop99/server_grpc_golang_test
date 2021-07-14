@@ -20,10 +20,33 @@ message MultiplyRespone {
     int32 multiply_result = 1;
 }
 
+message AverageRequest {
+    int32 number = 1;
+}
+
+message AverageRespone {
+    double average_result = 1;
+}
+
+
+message SquareRootRequest {
+    int32 number = 1;
+}
+message SquareRootRespone {
+    double number_root = 1;
+}
+
 service CalculatorService {
     //Unary
     rpc Sum (SumRequest) returns (SumRespone);
 
     //Server Stream
     rpc Multiply (MultiplyRequest) returns (stream MultiplyRespone);
+
+    //Client Stream
+    rpc Average (stream AverageRequest) returns (AverageRespone);
+    
+    //Error Handling
+    rpc SquareRoot(SquareRootRequest) returns (SquareRootRespone){};
+
 }
