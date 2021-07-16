@@ -10,7 +10,6 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/internal/status"
 	"google.golang.org/grpc/status"
 )
 
@@ -103,7 +102,7 @@ func doErrorUnary(c pb.CalculatorServiceClient) {
 }
 
 func doErrorCall(c pb.CalculatorServiceClient, n int32) {
-	res, err := c.SquareRoot(context.Background(), &pb.SquareRootRequest{Number: 1})
+	res, err := c.SquareRoot(context.Background(), &pb.SquareRootRequest{Number: n})
 	if err != nil {
 		resErr, ok := status.FromError(err)
 		if ok {
@@ -111,11 +110,13 @@ func doErrorCall(c pb.CalculatorServiceClient, n int32) {
 			fmt.Println(resErr.Code())
 			if resErr.Code() == codes.InvalidArgument {
 				fmt.Println("We probably sent a negative number!")
+				return
 			}
 		} else {
-			log.Fatalf("Big Error calling SquareRoot: %v", err)
+			log.Fatalf("Big Error calling SquareRoot: %v\n", err)
+			return
 		}
 	}
-	fmt.Printf("Result of square root of %v: %v", n, res.GetNumberRoot())
+	fmt.Printf("Result of square root of %v: %v\n", n, res.GetNumberRoot())
 
 }

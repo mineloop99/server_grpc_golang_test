@@ -39,6 +39,14 @@ message GreetEveryoneRespone {
     string result = 1;
 }
 
+message GreetWithDeadlineRequest {
+    Greeting greeting = 1;
+}
+
+message GreetWithDeadlineRespone {
+    string result = 1;
+}
+
 service GreetService {
     //Unary
     rpc Greet(GreetRequest) returns (GreetRespone){};
@@ -52,4 +60,6 @@ service GreetService {
     // BiDi Streaming
     rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneRespone){};
 
+    // Unary With Deadline
+    rpc GreetWithDeadLine(GreetWithDeadlineRequest) returns (GreetWithDeadlineRespone) {};
 };
